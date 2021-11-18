@@ -19,6 +19,8 @@ lerna bootstrap --scope="${APP_BASE}" --include-dependencies
 lerna run build --scope="${APP_BASE}" --include-dependencies --stream
 ```
 
+Be sure to add this buildpack after heroku-buildpack-nodejs (so lerna cli will be available and the two commands above will work).
+
 ## Troubleshooting
 
 If lerna is not found, make sure to have lerna as a dev dependency in your package.json at the root of you repository.
