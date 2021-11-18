@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [ ! -f "$1/package.json" ]; then
+  exit 1
+fi
+
+if [ -f "$1/lerna.json" ]; then
+  echo "Lerna"
+  exit 0
+else
+  exit 1
+fi
