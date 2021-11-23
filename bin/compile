@@ -13,33 +13,42 @@ BP_DIR=$(cd "$(dirname "${0:-}")"; cd ..; pwd)
 source "$BP_DIR/lib/output.sh"
 source "$BP_DIR/lib/environment.sh"
 
-if [ ! -f "${ENV_DIR}/APP_BASE" ]; then
-    echo "APP_BASE was not set. Aborting" | indent
+if [ ! -f "${ENV_DIR}/PACKAGE_ID" ]; then
+    echo "PACKAGE_ID was not set. Aborting" | indent
     exit 1
 fi
-APP_BASE="$(cat "${ENV_DIR}/APP_BASE")"
+PACKAGE_ID="$(cat "${ENV_DIR}/PACKAGE_ID")"
+
+if [ ! -f "${ENV_DIR}/PACKAGE_PATH" ]; then
+    echo "PACKAGE_PATH was not set. Value will be set to packages/${PACKAGE_ID}" | indent
+    PACKAGE_PATH="packages/${PACKAGE_ID}"
+else
+    PACKAGE_PATH="$(cat "${ENV_DIR}/PACKAGE_PATH")"
+fi
 
 export_env_dir "$ENV_DIR"
 write_profile "$BP_DIR" "$BUILD_DIR"
 
-header "Changing current dir to ${BUILD_DIR}"
+header "Package information: ${PACKAGE_ID} - ${PACKAGE_PATH}"
+
+# header "Changing current dir to ${BUILD_DIR}"
 cd "${BUILD_DIR}"
 
 header "Installing dependencies (lerna bootstrap)"
-lerna bootstrap --scope="${APP_BASE}" --include-dependencies 2>&1 | output
+lerna bootstrap --scope="${PACKAGE_ID}" --include-dependencies 2>&1 | output
 
-header "Building ${APP_BASE} and its dependencies"
-lerna run build --scope="${APP_BASE}" --include-dependencies --stream 2>&1 | output
+header "Building ${PACKAGE_ID} and its dependencies"
+lerna run build --scope="${PACKAGE_ID}" --include-dependencies --stream 2>&1 | output
 
-header "Going back to previous directory"
-cd -
+# header "Going back to previous directory"
+# cd -
 
 (
-    mv "${BUILD_DIR}/${APP_BASE}" "${STAGE}" &&
+    mv "${BUILD_DIR}/${PACKAGE_PATH}" "${STAGE}" &&
     mv "${BUILD_DIR}/.heroku" "${STAGE}/.heroku"
     mv "${BUILD_DIR}/.profile.d" "${STAGE}/.profile.d"
     rm -rf "${BUILD_DIR}"/* &&
-    mv "${STAGE}/$(basename "$APP_BASE")"/* "${BUILD_DIR}"
+    mv "${STAGE}/$(basename "$PACKAGE_PATH")"/* "${BUILD_DIR}"
     mv "${STAGE}/.heroku" "${BUILD_DIR}/.heroku"
     mv "${STAGE}/.profile.d" "${BUILD_DIR}/.profile.d"
 )
@@ -49,4 +58,4 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "Copied ${APP_BASE} to root of app successfully" | indent
+echo "Copied ${PACKAGE_PATH} to root of app successfully" | indent
