@@ -42,11 +42,21 @@ lerna run build --scope="${PACKAGE_ID}" --include-dependencies --stream 2>&1 | o
 cd -
 
 (
+    header "ls -la ${BUILD_DIR}"
+    ls -la ${BUILD_DIR}
+
+    header "mv ${BUILD_DIR}/${PACKAGE_PATH} ${STAGE}"
     mv "${BUILD_DIR}/${PACKAGE_PATH}" "${STAGE}" &&
+
+    header "mv ${BUILD_DIR}/.heroku ${STAGE}/.heroku"
     mv "${BUILD_DIR}/.heroku" "${STAGE}/.heroku"
     mv "${BUILD_DIR}/.profile.d" "${STAGE}/.profile.d"
     rm -rf "${BUILD_DIR}"/* &&
+
+    header "mv ${STAGE}/$(basename $PACKAGE_PATH)/* ${BUILD_DIR}"
     mv "${STAGE}/$(basename "$PACKAGE_PATH")"/* "${BUILD_DIR}"
+
+    header "mv ${STAGE}/.heroku ${BUILD_DIR}/.heroku"
     mv "${STAGE}/.heroku" "${BUILD_DIR}/.heroku"
     mv "${STAGE}/.profile.d" "${BUILD_DIR}/.profile.d"
 )
