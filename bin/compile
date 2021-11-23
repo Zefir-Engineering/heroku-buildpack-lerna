@@ -13,15 +13,15 @@ BP_DIR=$(cd "$(dirname "${0:-}")"; cd ..; pwd)
 source "$BP_DIR/lib/output.sh"
 source "$BP_DIR/lib/environment.sh"
 
-if [ ! -f "${ENV_DIR}/PACKAGE_ID" ]; then
-    echo "PACKAGE_ID was not set. Aborting" | indent
+if [ ! -f "${ENV_DIR}/PACKAGE_NAME" ]; then
+    echo "PACKAGE_NAME was not set. Aborting" | indent
     exit 1
 fi
-PACKAGE_ID="$(cat "${ENV_DIR}/PACKAGE_ID")"
+PACKAGE_NAME="$(cat "${ENV_DIR}/PACKAGE_NAME")"
 
 if [ ! -f "${ENV_DIR}/PACKAGE_PATH" ]; then
-    echo "PACKAGE_PATH was not set. Value will be set to packages/${PACKAGE_ID}" | indent
-    PACKAGE_PATH="packages/${PACKAGE_ID}"
+    echo "PACKAGE_PATH was not set. Value will be set to packages/${PACKAGE_NAME}" | indent
+    PACKAGE_PATH="packages/${PACKAGE_NAME}"
 else
     PACKAGE_PATH="$(cat "${ENV_DIR}/PACKAGE_PATH")"
 fi
@@ -29,15 +29,15 @@ fi
 export_env_dir "$ENV_DIR"
 write_profile "$BP_DIR" "$BUILD_DIR"
 
-header "Package information: ${PACKAGE_ID} - ${PACKAGE_PATH}"
+header "Package information: ${PACKAGE_NAME} - ${PACKAGE_PATH}"
 
 cd "${BUILD_DIR}"
 
 header "Installing dependencies (lerna bootstrap)"
-lerna bootstrap --scope="${PACKAGE_ID}" --include-dependencies 2>&1 | output
+lerna bootstrap --scope="${PACKAGE_NAME}" --include-dependencies 2>&1 | output
 
-header "Building ${PACKAGE_ID} and its dependencies"
-lerna run build --scope="${PACKAGE_ID}" --include-dependencies --stream 2>&1 | output
+header "Building ${PACKAGE_NAME} and its dependencies"
+lerna run build --scope="${PACKAGE_NAME}" --include-dependencies --stream 2>&1 | output
 
 cd -
 
