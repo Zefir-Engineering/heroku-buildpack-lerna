@@ -50,6 +50,8 @@ cd -
 
     header "mv ${BUILD_DIR}/.heroku ${STAGE}/.heroku"
     mv "${BUILD_DIR}/.heroku" "${STAGE}/.heroku"
+
+    header "mv ${BUILD_DIR}/.profile.d ${STAGE}/.profile.d"
     mv "${BUILD_DIR}/.profile.d" "${STAGE}/.profile.d"
 
     header "ls -la ${STAGE}"
@@ -62,10 +64,13 @@ cd -
 
     header "mv ${STAGE}/.heroku ${BUILD_DIR}/.heroku"
     mv "${STAGE}/.heroku" "${BUILD_DIR}/.heroku"
+    
+    header "mv ${STAGE}/.profile.d ${BUILD_DIR}/.profile.d"
     mv "${STAGE}/.profile.d" "${BUILD_DIR}/.profile.d"
     
-    header "ls -la ${BUILD_DIR}"
+    header "ls -la ${BUILD_DIR} + pwd"
     ls -la ${BUILD_DIR}
+    pwd
 )
 
 if [ $? -ne 0 ]; then
