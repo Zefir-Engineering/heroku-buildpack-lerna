@@ -7,16 +7,17 @@ This buildpack is based on these two buildpacks: [heroku-buildpack-nodejs](https
 
 To deploy your application, you need to:
 
-- Set the Config Var APP_BASE in Heroku to your application path (i.e packages/client).
+- Set the Config Var PACKAGE_ID in Heroku to reflect the name of the package you want to deploy.
+- Set the config Var PACKAGE_PATH in Heroku to your application path if your package is not located into the `packages` directory.
 - Set the Config Var YARN_PRODUCTION to false.
 
 This buildpack will just run two commands thanks to lerna to compile your application.
 To start your application, a file named `Procfile` is required in your application.
 
 ```
-lerna bootstrap --scope="${APP_BASE}" --include-dependencies
+lerna bootstrap --scope="${PACKAGE_ID}" --include-dependencies
 
-lerna run build --scope="${APP_BASE}" --include-dependencies --stream
+lerna run build --scope="${PACKAGE_ID}" --include-dependencies --stream
 ```
 
 Be sure to add this buildpack after heroku-buildpack-nodejs (so lerna cli will be available and the two commands above will work).
