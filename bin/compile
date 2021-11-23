@@ -31,7 +31,6 @@ write_profile "$BP_DIR" "$BUILD_DIR"
 
 header "Package information: ${PACKAGE_ID} - ${PACKAGE_PATH}"
 
-# header "Changing current dir to ${BUILD_DIR}"
 cd "${BUILD_DIR}"
 
 header "Installing dependencies (lerna bootstrap)"
@@ -40,8 +39,7 @@ lerna bootstrap --scope="${PACKAGE_ID}" --include-dependencies 2>&1 | output
 header "Building ${PACKAGE_ID} and its dependencies"
 lerna run build --scope="${PACKAGE_ID}" --include-dependencies --stream 2>&1 | output
 
-# header "Going back to previous directory"
-# cd -
+cd -
 
 (
     mv "${BUILD_DIR}/${PACKAGE_PATH}" "${STAGE}" &&
